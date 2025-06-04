@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TODO Listy — czarno-limonkowy design</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+    body {
+      margin: 0;
+      background-color: #000;
+      color: #aaff00;
+      font-family: 'Orbitron', monospace, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: 0.15em;
+      text-align: center;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 10px 15px;
+      font-family: 'Orbitron', monospace, sans-serif;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      border: 2px solid #aaff00;
+      background: #111;
+      color: #aaff00;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #ccff33;
+      box-shadow: 0 0 8px #ccff33;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-family: 'Orbitron', monospace, sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #aaff00;
+      color: #000;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ccff33;
+    }
+
+    #listsContainer {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    #listNames {
+      flex: 1 1 200px;
+      background: #111;
+      border: 2px solid #aaff00;
+      border-radius: 16px;
+      padding: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 0 20px #aaff00cc;
+    }
+
+    #listNames h2 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    #listNames ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #listNames li {
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    #listNames li.selected,
+    #listNames li:hover {
+      background-color: #ccff33;
+      color: #000;
+      border-color: #aaff00;
+      font-weight: 700;
+      box-shadow: 0 0 10px #aaff00;
+    }
+
+    #todoSection {
+      flex: 2 1 400px;
+      background: #111;
+      border: 2px solid #aaff00;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 0 20px #aaff00cc;
+      display: flex;
+      flex-direction: column;
+      height: 400px;
+      max-height: 100%;
+    }
+
+    #todoSection h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #todoForm {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    #todoInput {
+      flex-grow: 1;
+    }
+
+    ul#todoList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    ul#todoList li {
+      background: #000;
+      border: 2px solid #aaff00;
+      border-radius: 12px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      box-shadow: 0 0 15px #aaff00cc;
+      transition: box-shadow 0.3s ease;
+    }
+
+    ul#todoList li.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+      color: #88aa33;
+      box-shadow: none;
+    }
+
+    ul#todoList li:hover {
+      box-shadow: 0 0 25px #ccff33ff, 0 0 40px #aaff00ff;
+    }
+
+    .task-text {
+      flex-grow: 1;
+      cursor: pointer;
+    }
+
+    button.deleteBtn {
+      background: #a80000;
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button.deleteBtn:hover {
+      background: #cc0000;
+    }
+
+    #deleteListBtn {
+      background:#a80000;
+      color:#fff;
+      border:none;
+      padding:8px 15px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      margin-bottom: 15px;
+      display: none;
+      transition: background-color 0.3s ease;
+    }
+
+    #deleteListBtn:hover {
+      background: #cc0000;
+    }
+
+    footer {
+      margin-top: auto;
+      font-family: Arial, sans-serif;
+      font-weight: 600;
+      color: #aaff00cc;
+      letter-spacing: 0.05em;
+      text-align: center;
+      padding: 15px 0 5px 0;
+      width: 100%;
+    }
+
+    @media (max-width: 720px) {
+      #listsContainer {
+        flex-direction: column;
+        align-items: center;
+      }
+      #listNames, #todoSection {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+      }
+      #todoSection {
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>TODO Listy</h1>
+
+  <div class="form-group">
+    <input type="text" id="listNameInput" placeholder="Nazwa nowej listy..." aria-label="Nazwa nowej listy" />
+    <button id="createListBtn">Stwórz listę</button>
+  </div>
+
+  <div id="listsContainer">
+
+    <div id="listNames">
+      <h2>Twoje listy</h2>
+      <ul id="listsUl"></ul>
+    </div>
+
+    <div id="todoSection">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 id="currentListTitle">Wybierz listę</h2>
+        <button id="deleteListBtn">Usuń listę</button>
+      </div>
+
+      <form id="todoForm" onsubmit="return false;">
+        <input type="text" id="todoInput" placeholder="Dodaj nowe zadanie..." aria-label="Dodaj nowe zadanie" disabled />
+        <button id="addBtn" type="submit" disabled>Dodaj</button>
+      </form>
+
+      <ul id="todoList"></ul>
+    </div>
+
+  </div>
+
+  <footer>Stworzył: Oktawian Gorzka</footer>
+
+<script>
+  const listNameInput = document.getElementById('listNameInput');
+  const createListBtn = document.getElementById('createListBtn');
+  const listsUl = document.getElementById('listsUl');
+  const currentListTitle = document.getElementById('currentListTitle');
+  const todoInput = document.getElementById('todoInput');
+  const addBtn = document.getElementById('addBtn');
+  const todoList = document.getElementById('todoList');
+  const deleteListBtn = document.getElementById('deleteListBtn');
+
+  let todoLists = {};   // { nazwaListy: [ {text, completed} ] }
+  let currentList = null;
+
+  // Renderuj listę list
+  function renderLists() {
+    listsUl.innerHTML = '';
+    const names = Object.keys(todoLists);
+    if (names.length === 0) {
+      currentListTitle.textContent = 'Wybierz listę';
+      todoInput.disabled = true;
+      addBtn.disabled = true;
+      deleteListBtn.style.display = 'none';
+      todoList.innerHTML = '';
+    }
+    names.forEach(name => {
+      const li = document.createElement('li');
+      li.textContent = name;
+      if (name === currentList) {
+        li.classList.add('selected');
+      }
+      li.addEventListener('click', () => selectList(name));
+      listsUl.appendChild(li);
+    });
+  }
+
+  // Wybór listy
+  function selectList(name) {
+    currentList = name;
+    currentListTitle.textContent = `Lista: ${name}`;
+    todoInput.disabled = false;
+    addBtn.disabled = false;
+    deleteListBtn.style.display = 'inline-block';
+    renderLists();
+    renderTasks();
+  }
+
+  // Renderuj zadania w aktualnej liście
+  function renderTasks() {
+    todoList.innerHTML = '';
+    if (!currentList) return;
+    todoLists[currentList].forEach((task, index) => {
+      const li = document.createElement('li');
+      li.className = task.completed ? 'completed' : '';
+
+      const span = document.createElement('span');
+      span.className = 'task-text';
+      span.textContent = task.text;
+      span.title = 'Kliknij, aby oznaczyć jako ukończone/nieukończone';
+      span.addEventListener('click', () => {
+        task.completed = !task.completed;
+        renderTasks();
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'deleteBtn';
+      deleteBtn.textContent = 'Usuń';
+      deleteBtn.addEventListener('click', () => {
+        todoLists[currentList].splice(index, 1);
+        renderTasks();
+      });
+
+      li.appendChild(span);
+      li.appendChild(deleteBtn);
+      todoList.appendChild(li);
+    });
+  }
+
+  // Dodaj nową listę
+  createListBtn.addEventListener('click', () => {
+    const name = listNameInput.value.trim();
+    if (!name) {
+      alert('Podaj nazwę listy!');
+      return;
+    }
+    if (todoLists[name]) {
+      alert('Lista o takiej nazwie już istnieje!');
+      return;
+    }
+    todoLists[name] = [];
+    listNameInput.value = '';
+    selectList(name);
+  });
+
+  // Dodaj zadanie
+  addBtn.addEventListener('click', () => {
+    if (!currentList) return;
+    const text = todoInput.value.trim();
+    if (!text) return;
+    todoLists[currentList].push({ text, completed: false });
+    todoInput.value = '';
+    renderTasks();
+  });
+
+  // Wciśnięcie Enter w polu zadania dodaje zadanie
+  todoInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addBtn.click();
+    }
+  });
+
+  // Usuń listę
+  deleteListBtn.addEventListener('click', () => {
+    if (!currentList) return;
+    if (confirm(`Na pewno chcesz usunąć listę "${currentList}"?`)) {
+      delete todoLists[currentList];
+      currentList = null;
+      currentListTitle.textContent = 'Wybierz listę';
+      todoInput.disabled = true;
+      addBtn.disabled = true;
+      deleteListBtn.style.display = 'none';
+      todoList.innerHTML = '';
+      renderLists();
+    }
+  });
+
+  // Inicjalizacja
+  renderLists();
+</script>
+
+</body>
+</html>
